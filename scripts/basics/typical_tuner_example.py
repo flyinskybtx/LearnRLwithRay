@@ -23,7 +23,7 @@ if __name__ == '__main__':
     run_config = air.RunConfig(
         stop={
             "training_iteration": int(1e4),
-            "episode_reward_mean": 300.0
+            "episode_reward_mean": 200.0
         },
         name=experiment_name,
         local_dir=os.environ["TUNE_RESULT_DIR"],
@@ -32,7 +32,6 @@ if __name__ == '__main__':
         checkpoint_config=checkpoint_config,
         verbose=2,
     )
-    
     config = {
         "output": os.environ['RAY_DATA_DIR'],
         "num_workers": 2,
@@ -47,7 +46,7 @@ if __name__ == '__main__':
         "evaluation_duration": 1,
         "evaluation_duration_unit": "episodes",
         "env": env_name,
-        "framework": "tf2",
+        "framework": "torch",
         "eager_tracing": True,
         "log_level": "INFO",
         "disable_env_checking": True,

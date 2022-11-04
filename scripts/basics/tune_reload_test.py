@@ -57,7 +57,7 @@ if __name__ == '__main__':
     # tf.config.experimental.set_memory_growth(gpu, True)
     
     env_name = 'CartPole-v1'
-    algorithm = "PG"
+    algorithm = "PPO"
     experiment_name = '-'.join((os.path.basename(__file__).split('.py')[0],
                                 algorithm, env_name))
     ray_results_dir = os.environ["TUNE_RESULT_DIR"]
@@ -134,7 +134,12 @@ if __name__ == '__main__':
     phase_3_name = experiment_name + '_phase_3'
     new_trainer = make_reload_trainer(algorithm, model_h5)
     new_tuner = tune.Tuner(
-        tune.with_resources(new_trainer, resources={"GPU": 0, "CPU": 4}),
+        tune.with_resources(
+            trainable=new_trainer,
+            resources=tune.PlacementGroupFactory(
+                [{'CPU': 1.0}] + [{'CPU': 1.0}] * config["num_workers"]
+            )
+        ),
         run_config=air.RunConfig(
             stop={"training_iteration": 30,
                   "episode_reward_mean": 200},

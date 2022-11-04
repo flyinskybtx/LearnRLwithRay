@@ -14,7 +14,7 @@ config_dict = {"PG": PGConfig, "PPO": PPOConfig}
 def train_fn(config, reporter):
     iterations = config.get('train-iterations', 10)
     algo_config = config_dict[algo]()
-    algo_config.resources(num_gpus=0)
+    # algo_config.resources(num_gpus=0)
     algo_config.framework(framework='tf2', eager_tracing=True)
     algo_config.environment(env=config.get('env_name'),
                             disable_env_checking=True)

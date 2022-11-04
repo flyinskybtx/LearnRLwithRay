@@ -19,12 +19,13 @@ def train_fn(config, reporter):
     algo_config.environment(env=config.get('env_name'),
                             disable_env_checking=True)
     algo_config.rollouts(num_rollout_workers=config.get("num_workers", 1))
-    algo_config.training(lr=0.01)
+    algo_config.training(lr=config.get("lr", 1e-2))
     algo_config.evaluation(evaluation_duration=1,
                            evaluation_duration_unit='episodes',
                            evaluation_interval=5,
                            evaluation_config={"render_env": True,
                                               "explore": False})
+    
     trainer = algo_config.build()
     for _ in range(iterations):
         result = trainer.train()
@@ -38,7 +39,7 @@ def train_fn(config, reporter):
 
 if __name__ == '__main__':
     env_name = 'CartPole-v1'
-    algo = "PG"
+    algo = "PPO"
     experiment_name = '-'.join((os.path.basename(__file__).split('.py')[0],
                                 algo, env_name))
     config = {
@@ -47,6 +48,7 @@ if __name__ == '__main__':
         "env_name": env_name,
         "num_gpus": 0,
         "num_workers": 2,
+        "lr": 1e-2,
     }
     checkpoint_config = air.CheckpointConfig(
         num_to_keep=5,
